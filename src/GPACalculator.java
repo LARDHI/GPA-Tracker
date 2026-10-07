@@ -50,13 +50,13 @@ public class GPACalculator {
         return qualityPoints;
     }
 
-        public double semesterGPA(
-            float gpaScale,
-            String gradingSystem,
-            ArrayList<Course> courses) {
+    public double semesterGPA(
+        float gpaScale,
+        String gradingSystem,
+        ArrayList<Course> courses) {
 
         if (courses.isEmpty()) {
-            return Double.NaN;
+        return Double.NaN;
         }
 
         double totalQualityPoints = 0;
@@ -65,10 +65,10 @@ public class GPACalculator {
         for (Course course : courses) {
 
             totalQualityPoints += qualityPoints(
-                    course.grade,
-                    gpaScale,
-                    gradingSystem,
-                    course.creditHours
+                course.grade,
+                gpaScale,
+                gradingSystem,
+                course.creditHours
             );
 
             totalCreditHours += course.creditHours;
@@ -81,5 +81,61 @@ public class GPACalculator {
                 Math.round(gpaSemester * 1000.0) / 1000.0;
 
         return roundedGPA;
+    }
+
+    public double semesterTotalQualityPoints(
+        float gpaScale,
+        String gradingSystem,
+        ArrayList<Course> courses) {
+
+        double semesterTotalQualityPoints = 0;
+
+        for (Course course : courses) {
+
+            semesterTotalQualityPoints += qualityPoints(
+                    course.grade,
+                    gpaScale,
+                    gradingSystem,
+                    course.creditHours
+            );
+        }
+
+        return semesterTotalQualityPoints;
+    }
+
+    public double totalAcademicQualityPoints(
+        float gpaScale,
+        String gradingSystem,
+        ArrayList<Semester> semesters) {
+
+        double totalAcademicQualityPoints = 0;
+
+        for (Semester semester : semesters) {
+
+            totalAcademicQualityPoints +=
+                semesterTotalQualityPoints(
+                        gpaScale,
+                        gradingSystem,
+                        semester.courses
+                );
+        }
+
+        return totalAcademicQualityPoints;
+    }
+
+    public float totalAcademicCreditHours(
+        ArrayList<Semester> semesters) {
+
+        float totalAcademicCreditHours = 0;
+
+        for (Semester semester : semesters) {
+
+            for (Course course : semester.courses) {
+
+                totalAcademicCreditHours += course.creditHours;
+            }
+        }
+
+        return totalAcademicCreditHours;
     }
 }
