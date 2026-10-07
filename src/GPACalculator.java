@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Map;
 
 public class GPACalculator {
@@ -47,5 +48,38 @@ public class GPACalculator {
         double qualityPoints = creditHours * gradePoint;
 
         return qualityPoints;
+    }
+
+        public double semesterGPA(
+            float gpaScale,
+            String gradingSystem,
+            ArrayList<Course> courses) {
+
+        if (courses.isEmpty()) {
+            return Double.NaN;
+        }
+
+        double totalQualityPoints = 0;
+        float totalCreditHours = 0;
+
+        for (Course course : courses) {
+
+            totalQualityPoints += qualityPoints(
+                    course.grade,
+                    gpaScale,
+                    gradingSystem,
+                    course.creditHours
+            );
+
+            totalCreditHours += course.creditHours;
+        }
+
+        double gpaSemester =
+                totalQualityPoints / totalCreditHours;
+
+        double roundedGPA =
+                Math.round(gpaSemester * 1000.0) / 1000.0;
+
+        return roundedGPA;
     }
 }
