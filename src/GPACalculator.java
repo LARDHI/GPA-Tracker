@@ -138,4 +138,32 @@ public class GPACalculator {
 
         return totalAcademicCreditHours;
     }
+
+    public double cgpa(
+        float gpaScale,
+        String gradingSystem,
+        ArrayList<Semester> semesters) {
+
+        double totalQualityPoints =
+            totalAcademicQualityPoints(
+                    gpaScale,
+                    gradingSystem,
+                    semesters
+            );
+
+        float totalCreditHours =
+                totalAcademicCreditHours(semesters);
+
+        if (totalCreditHours == 0) {
+            return Double.NaN;
+        }
+
+        double cgpa =
+                totalQualityPoints / totalCreditHours;
+
+        double roundedCGPA =
+                Math.round(cgpa * 1000.0) / 1000.0;
+
+        return roundedCGPA;
+    }
 }
