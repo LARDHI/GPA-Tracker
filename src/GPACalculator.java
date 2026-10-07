@@ -166,4 +166,124 @@ public class GPACalculator {
 
         return roundedCGPA;
     }
+
+    public Semester bestSemester(
+        float gpaScale,
+        String gradingSystem,
+        ArrayList<Semester> semesters) {
+
+        Semester bestSemester = null;
+
+        for (Semester semester : semesters) {
+
+            if (semester.courses.isEmpty()) {
+             continue;
+            }
+
+            double currentGPA =
+                    semesterGPA(
+                        gpaScale,
+                        gradingSystem,
+                        semester.courses
+                    );
+
+            if (bestSemester == null) {
+
+                bestSemester = semester;
+
+            } else {
+
+                double bestGPA =
+                        semesterGPA(
+                            gpaScale,
+                            gradingSystem,
+                            bestSemester.courses
+                        );
+
+                if (currentGPA > bestGPA) {
+
+                    bestSemester = semester;
+
+                } else if (currentGPA == bestGPA) {
+
+                    float currentCreditHours = 0;
+                    float bestCreditHours = 0;
+
+                    for (Course course : semester.courses) {
+                        currentCreditHours += course.creditHours;
+                    }
+
+                    for (Course course : bestSemester.courses) {
+                        bestCreditHours += course.creditHours;
+                    }
+
+                    if (currentCreditHours > bestCreditHours) {
+                        bestSemester = semester;
+                    }
+                }
+            }
+        }
+
+        return bestSemester;
+    }
+
+    public Semester lowestSemester(
+        float gpaScale,
+        String gradingSystem,
+        ArrayList<Semester> semesters) {
+
+        Semester lowestSemester = null;
+
+        for (Semester semester : semesters) {
+
+            if (semester.courses.isEmpty()) {
+                continue;
+            }
+
+            double currentGPA =
+                    semesterGPA(
+                        gpaScale,
+                        gradingSystem,
+                        semester.courses
+                    );
+
+            if (lowestSemester == null) {
+
+                lowestSemester = semester;
+
+            } else {
+
+                double lowestGPA =
+                        semesterGPA(
+                            gpaScale,
+                            gradingSystem,
+                            lowestSemester.courses
+                        );
+
+                if (currentGPA < lowestGPA) {
+
+                    lowestSemester = semester;
+
+                } else if (currentGPA == lowestGPA) {
+
+                    float currentCreditHours = 0;
+                    float lowestCreditHours = 0;
+
+                    for (Course course : semester.courses) {
+                    currentCreditHours += course.creditHours;
+                    }
+
+                    for (Course course : lowestSemester.courses) {
+                        lowestCreditHours += course.creditHours;
+                    }
+
+                    if (currentCreditHours > lowestCreditHours) {
+                        lowestSemester = semester;
+                    }
+                }
+            }
+        }
+
+        return lowestSemester;
+    }
 }
