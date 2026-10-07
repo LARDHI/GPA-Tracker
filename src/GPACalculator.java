@@ -30,4 +30,22 @@ public class GPACalculator {
 
         return gradeTable.get(grade);
     }
+
+
+    public double qualityPoints(
+            String grade,
+            float gpaScale,
+            String gradingSystem,
+            float creditHours) {
+
+        double gradePoint = gradeToGradePoint(
+                grade,
+                gpaScale,
+                gradingSystem
+        );
+
+        double qualityPoints = creditHours * gradePoint;
+
+        return qualityPoints;
+    }
 }
