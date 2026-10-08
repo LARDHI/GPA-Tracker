@@ -1,11 +1,10 @@
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class GradeTables {
 
     public Map<String, Double> fourPlusOnly() {
-
-        Map<String, Double> gradeTable = new HashMap<>();
+        Map<String, Double> gradeTable = new LinkedHashMap<>();
 
         gradeTable.put("A+", 4.00);
         gradeTable.put("A", 3.75);
@@ -21,8 +20,7 @@ public class GradeTables {
     }
 
     public Map<String, Double> fourPlusMinus() {
-
-        Map<String, Double> gradeTable = new HashMap<>();
+        Map<String, Double> gradeTable = new LinkedHashMap<>();
 
         gradeTable.put("A+", 4.00);
         gradeTable.put("A", 3.75);
@@ -42,8 +40,7 @@ public class GradeTables {
     }
 
     public Map<String, Double> fivePlusOnly() {
-
-        Map<String, Double> gradeTable = new HashMap<>();
+        Map<String, Double> gradeTable = new LinkedHashMap<>();
 
         gradeTable.put("A+", 5.00);
         gradeTable.put("A", 4.75);
@@ -59,8 +56,7 @@ public class GradeTables {
     }
 
     public Map<String, Double> fivePlusMinus() {
-
-        Map<String, Double> gradeTable = new HashMap<>();
+        Map<String, Double> gradeTable = new LinkedHashMap<>();
 
         gradeTable.put("A+", 5.00);
         gradeTable.put("A", 4.75);
@@ -77,5 +73,52 @@ public class GradeTables {
         gradeTable.put("F", 1.00);
 
         return gradeTable;
+    }
+
+    public boolean isValidGrade(
+            String grade,
+            float gpaScale,
+            String gradingSystem) {
+
+        Map<String, Double> gradeTable;
+
+        if (gpaScale == 4.0) {
+            if (gradingSystem.equals("Plus Only")) {
+                gradeTable = fourPlusOnly();
+            } else {
+                gradeTable = fourPlusMinus();
+            }
+        } else {
+            if (gradingSystem.equals("Plus Only")) {
+                gradeTable = fivePlusOnly();
+            } else {
+                gradeTable = fivePlusMinus();
+            }
+        }
+
+        return gradeTable.containsKey(grade);
+    }
+
+    public String validGrades(
+            float gpaScale,
+            String gradingSystem) {
+
+        Map<String, Double> gradeTable;
+
+        if (gpaScale == 4.0) {
+            if (gradingSystem.equals("Plus Only")) {
+                gradeTable = fourPlusOnly();
+            } else {
+                gradeTable = fourPlusMinus();
+            }
+        } else {
+            if (gradingSystem.equals("Plus Only")) {
+                gradeTable = fivePlusOnly();
+            } else {
+                gradeTable = fivePlusMinus();
+            }
+        }
+
+        return String.join(", ", gradeTable.keySet());
     }
 }
