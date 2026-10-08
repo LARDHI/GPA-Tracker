@@ -25,15 +25,20 @@ class Program {
             System.out.println("1. 4.0");
             System.out.println("2. 5.0");
 
-            int choice = sc.nextInt();
+            if(sc.hasNextInt()){
+                int choice = sc.nextInt();
 
-            if (choice == 1) {
-                gpaScale = 4.0f;
-                break;
-            }
-            else if (choice == 2) {
-                gpaScale = 5.0f;
-                break;
+                if (choice == 1) {
+                    gpaScale = 4.0f;
+                    break;
+                }
+                else if (choice == 2) {
+                    gpaScale = 5.0f;
+                    break;
+                }
+            } else {
+                System.out.println("Invalid Input");
+                sc.nextLine();
             }
         }
 
@@ -44,15 +49,23 @@ class Program {
             System.out.println("1. Plus Only");
             System.out.println("2. Plus / Minus");
 
-            int choice = sc.nextInt();
+            if(sc.hasNextInt()) {
+                int choice = sc.nextInt();
 
-            if (choice == 1) {
-                gradingSystem = "Plus Only";
-                break;
-            }
-            else if (choice == 2) {
-                gradingSystem = "Plus / Minus";
-                break;
+                if (choice == 1) {
+                    gradingSystem = "Plus Only";
+                    break;
+                }
+                else if (choice == 2) {
+                    gradingSystem = "Plus / Minus";
+                    break;
+                } else {
+                    System.out.println("Enter 1 or 2");
+                    continue;
+                }
+            } else {
+                System.out.println("Invalid Input");
+                sc.nextLine();
             }
         }
 
@@ -103,15 +116,20 @@ class Program {
 
         while (true) {
             System.out.print("Enter Number of Courses: ");
-            coursesNumber = sc.nextInt();
+            
+            if(sc.hasNextInt()) {
+                coursesNumber = sc.nextInt();
 
-            if (coursesNumber <= 0) {
-                System.out.println("Enter Valid Number");
-                continue;
+                if(coursesNumber <= 0) {
+                    System.out.println("Enter Valid Number");
+                    continue;
+                }
+                break;
+
+            } else {
+                System.out.println("Invalid Input");
+                sc.nextLine();
             }
-
-            break;
-        }
 
         sc.nextLine();
 
@@ -122,15 +140,44 @@ class Program {
 
         for (int i = 0; i < coursesNumber; i++) {
 
-            System.out.print("Enter Course Name: ");
-            courseName = sc.nextLine();
+            while(true) {
+                System.out.print("Enter Course Name: ");
+                courseName = sc.nextLine();
 
-            System.out.print("Enter Course Code: ");
-            courseCode = sc.nextLine();
+                if(courseName.trim().isEmpty()) {
+                    System.out.println("You can't Enter Empty Name");
+                    continue;
+                }
+                break;
+            }
 
-            System.out.print("Enter Credit Hours: ");
-            creditHours = sc.nextFloat();
-            sc.nextLine();
+            while(true) {
+                System.out.print("Enter Course Code: ");
+                courseCode = sc.nextLine();
+
+                if(courseCode.trim().isEmpty()) {
+                    System.out.println("You Can't Enter Empty Code");
+                    continue;
+                }
+                break;
+            }
+
+            while(true) {
+                System.out.print("Enter Credit Hours: ");
+
+                if(sc.hasNextFloat()) {
+                    creditHours = sc.nextFloat();
+
+                    if(creditHours <= 0) {
+                        System.out.println("You Can't Enter Hours below 1");
+                        continue;
+                    }
+                    break;
+                } else {
+                    System.out.println("Invalid Input");
+                    sc.nextLine();
+                }
+            }
 
             while (true) {
                 System.out.print("Enter Grade: ");
