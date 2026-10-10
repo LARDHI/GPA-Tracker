@@ -11,11 +11,13 @@ class Program {
             System.out.print("Enter your Full Name: ");
             fullName = sc.nextLine();
 
-            String[] names = fullName.trim().split("\\s+");
+            fullName = fullName.trim().replaceAll("\\s+", " ");
 
-            if (names.length == 4) {
+            if (!fullName.isEmpty()) {
                 break;
             }
+
+            System.out.println("Name can't be empty.");
         }
 
         float gpaScale;
@@ -83,7 +85,7 @@ class Program {
 
         while (true) {
             System.out.print("Enter Semester Name: ");
-            semesterName = sc.nextLine();
+            semesterName = sc.nextLine().trim();
 
             if (semesterName.trim().isEmpty()) {
                 continue;
@@ -144,7 +146,7 @@ class Program {
 
             while(true) {
                 System.out.print("Enter Course Name: ");
-                courseName = sc.nextLine();
+                courseName = sc.nextLine().trim();
 
                 if(courseName.trim().isEmpty()) {
                     System.out.println("You can't Enter Empty Name");
@@ -155,7 +157,7 @@ class Program {
 
             while(true) {
                 System.out.print("Enter Course Code: ");
-                courseCode = sc.nextLine();
+                courseCode = sc.nextLine().trim();
 
                 if(courseCode.trim().isEmpty()) {
                     System.out.println("You Can't Enter Empty Code");
