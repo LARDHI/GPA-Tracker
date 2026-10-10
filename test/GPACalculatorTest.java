@@ -18,6 +18,7 @@ public class GPACalculatorTest {
         testEmptySemester();
         testCGPAAcrossMultipleSemesters();
         testCGPAWithNoSemesters();
+        testProgramAcceptsMultipleSemesters();
         testProgramDisplaysMatchingResults();
 
         System.out.println("All " + testsPassed + " GPA tests passed.");
@@ -145,6 +146,57 @@ public class GPACalculatorTest {
                 "Lowest semester should be null when there are no semesters");
     }
 
+    private static void testProgramAcceptsMultipleSemesters() throws Exception {
+        String input = String.join("\\n",
+                "Multi Semester Student",
+                "1",
+                "1",
+                "Fall 2026",
+                "1",
+                "Course A",
+                "A101",
+                "3",
+                "A+",
+                "maybe",
+                "Y",
+                "Spring 2027",
+                "1",
+                "Course B",
+                "B101",
+                "2",
+                "B",
+                "N",
+                "");
+
+        InputStream originalIn = System.in;
+        PrintStream originalOut = System.out;
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+
+        try {
+            System.setIn(new ByteArrayInputStream(input.getBytes(StandardCharsets.UTF_8)));
+            System.setOut(new PrintStream(output, true, "UTF-8"));
+            Program.main(new String[0]);
+        } finally {
+            System.setIn(originalIn);
+            System.setOut(originalOut);
+        }
+
+        String result = output.toString("UTF-8");
+        assertTrue(result.contains("Invalid choice. Enter Y or N."),
+                "Program must validate the add-semester choice");
+        assertTrue(result.contains("Semester Name       : Fall 2026"),
+                "Program must keep the first semester");
+        assertTrue(result.contains("Semester Name       : Spring 2027"),
+                "Program must accept a second semester");
+        assertTrue(result.contains("Semester GPA        : 4.0"),
+                "First semester GPA must match its own courses");
+        assertTrue(result.contains("Semester GPA        : 3.0"),
+                "Second semester GPA must match its own courses");
+        assertTrue(result.indexOf("Semester Name       : Fall 2026")
+                        < result.indexOf("Semester Name       : Spring 2027"),
+                "Semester summaries must be displayed in entry order");
+    }
+
     private static void testProgramDisplaysMatchingResults() throws Exception {
         String input = String.join("\n",
                 "Test Student",
@@ -160,6 +212,7 @@ public class GPACalculatorTest {
                 "B101",
                 "2",
                 "B",
+                "N",
                 "");
 
         InputStream originalIn = System.in;
