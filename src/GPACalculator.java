@@ -29,7 +29,11 @@ public class GPACalculator {
             }
         }
 
-        return gradeTable.get(grade);
+        Double gradePoint = gradeTable.get(grade);
+        if (gradePoint == null) {
+            throw new IllegalArgumentException("Invalid grade for the selected GPA scale and grading system: " + grade);
+        }
+        return gradePoint;
     }
 
 
@@ -55,8 +59,8 @@ public class GPACalculator {
         String gradingSystem,
         ArrayList<Course> courses) {
 
-        if (courses.isEmpty()) {
-        return Double.NaN;
+        if (courses == null || courses.isEmpty()) {
+            return Double.NaN;
         }
 
         double totalQualityPoints = 0;
@@ -74,6 +78,10 @@ public class GPACalculator {
             totalCreditHours += course.creditHours;
         }
 
+        if (totalCreditHours <= 0) {
+            return Double.NaN;
+        }
+
         double gpaSemester =
                 totalQualityPoints / totalCreditHours;
 
@@ -87,6 +95,10 @@ public class GPACalculator {
         float gpaScale,
         String gradingSystem,
         ArrayList<Course> courses) {
+
+        if (courses == null || courses.isEmpty()) {
+            return 0;
+        }
 
         double semesterTotalQualityPoints = 0;
 
