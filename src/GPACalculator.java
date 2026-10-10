@@ -166,7 +166,7 @@ public class GPACalculator {
         float totalCreditHours =
                 totalAcademicCreditHours(semesters);
 
-        if (totalCreditHours == 0) {
+        if (totalCreditHours <= 0) {
             return Double.NaN;
         }
 
