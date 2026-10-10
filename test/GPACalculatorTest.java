@@ -147,7 +147,7 @@ public class GPACalculatorTest {
     }
 
     private static void testProgramAcceptsMultipleSemesters() throws Exception {
-        String input = String.join("\\n",
+        String input = String.join("\n",
                 "Multi Semester Student",
                 "1",
                 "1",
