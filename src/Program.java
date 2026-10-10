@@ -130,7 +130,7 @@ class Program {
                 System.out.println("Invalid Input");
                 sc.nextLine();
             }
-
+        }
         sc.nextLine();
 
         String courseName;
@@ -178,6 +178,7 @@ class Program {
                     sc.nextLine();
                 }
             }
+            sc.nextLine();
 
             while (true) {
                 System.out.print("Enter Grade: ");
@@ -211,6 +212,33 @@ class Program {
 
             semester.courses.add(course);
         }
+        GPACalculator gpaCalculator = new GPACalculator();
+
+        double semesterGPA = gpaCalculator.semesterGPA(
+                student.gpaScale,
+                student.gradingSystem,
+                semester.courses
+        );
+
+        float totalCreditHours = 0;
+        for(Course course: semester.course) {
+            totalCreditHours += course.creditHours;
+        }
+
+        double totalQualityPoints =
+                gpaCalculator.semesterTotalQualityPoints(
+                        student.gpaScale,
+                        student.gradingSystem,
+                        semester.courses
+                );
+
+        System.out.println("\n========== Semester Summary ==========");
+        System.out.println("Semester Name       : " + semester.semesterName);
+        System.out.println("Semester GPA        : " + semesterGPA);
+        System.out.println("Total Credit Hours  : " + totalCreditHours);
+        System.out.println("Total Quality Points: " + totalQualityPoints);
+        System.out.println("======================================");
+
         sc.close();
     }
 }
