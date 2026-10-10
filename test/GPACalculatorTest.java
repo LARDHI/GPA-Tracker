@@ -16,6 +16,8 @@ public class GPACalculatorTest {
         testFivePointPlusMinus();
         testInvalidGrade();
         testEmptySemester();
+        testCGPAAcrossMultipleSemesters();
+        testCGPAWithNoSemesters();
         testProgramDisplaysMatchingResults();
 
         System.out.println("All " + testsPassed + " GPA tests passed.");
@@ -90,6 +92,57 @@ public class GPACalculatorTest {
                 4.0f, "Plus Only", courses)), "An empty semester must not have a GPA");
         assertEquals(0.0, calculator.semesterTotalQualityPoints(
                 4.0f, "Plus Only", courses), "Empty semester quality points");
+    }
+
+    private static void testCGPAAcrossMultipleSemesters() {
+        GPACalculator calculator = new GPACalculator();
+        ArrayList<Semester> semesters = new ArrayList<>();
+
+        Semester fall = new Semester();
+        fall.semesterName = "Fall 2026";
+        fall.courses = new ArrayList<>();
+        fall.courses.add(new Course("Course A", "A101", 3, "A+"));
+        fall.courses.add(new Course("Course B", "B101", 2, "B"));
+
+        Semester spring = new Semester();
+        spring.semesterName = "Spring 2027";
+        spring.courses = new ArrayList<>();
+        spring.courses.add(new Course("Course C", "C101", 1, "A"));
+
+        semesters.add(fall);
+        semesters.add(spring);
+
+        assertEquals(21.75, calculator.totalAcademicQualityPoints(
+                4.0f, "Plus Only", semesters),
+                "Multiple semesters total quality points");
+        assertEquals(6.0, calculator.totalAcademicCreditHours(semesters),
+                "Multiple semesters total credit hours");
+        assertEquals(3.625, calculator.cgpa(
+                4.0f, "Plus Only", semesters),
+                "CGPA must be weighted by credit hours");
+
+        assertTrue(calculator.bestSemester(4.0f, "Plus Only", semesters) == spring,
+                "Best semester should have the highest semester GPA");
+        assertTrue(calculator.lowestSemester(4.0f, "Plus Only", semesters) == fall,
+                "Lowest semester should have the lowest semester GPA");
+    }
+
+    private static void testCGPAWithNoSemesters() {
+        GPACalculator calculator = new GPACalculator();
+        ArrayList<Semester> semesters = new ArrayList<>();
+
+        assertTrue(Double.isNaN(calculator.cgpa(
+                4.0f, "Plus Only", semesters)),
+                "CGPA with no semesters should be undefined");
+        assertEquals(0.0, calculator.totalAcademicQualityPoints(
+                4.0f, "Plus Only", semesters),
+                "No semesters should have zero quality points");
+        assertEquals(0.0, calculator.totalAcademicCreditHours(semesters),
+                "No semesters should have zero credit hours");
+        assertTrue(calculator.bestSemester(4.0f, "Plus Only", semesters) == null,
+                "Best semester should be null when there are no semesters");
+        assertTrue(calculator.lowestSemester(4.0f, "Plus Only", semesters) == null,
+                "Lowest semester should be null when there are no semesters");
     }
 
     private static void testProgramDisplaysMatchingResults() throws Exception {
