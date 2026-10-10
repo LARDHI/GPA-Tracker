@@ -195,7 +195,7 @@ class Program {
             double totalQualityPoints = gpaCalculator.semesterTotalQualityPoints(
                     student.gpaScale, student.gradingSystem, semester.courses);
 
-            System.out.println("\\n========== Semester Summary ==========");
+            System.out.println("\n========== Semester Summary ==========");
             System.out.println("Semester Name       : " + semester.semesterName);
             System.out.println("Semester GPA        : " + semesterGPA);
             System.out.println("Total Credit Hours  : " + totalCreditHours);
