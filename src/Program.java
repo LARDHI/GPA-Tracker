@@ -35,6 +35,8 @@ class Program {
                 else if (choice == 2) {
                     gpaScale = 5.0f;
                     break;
+                } else {
+                    System.out.println("Enter 1 or 2");
                 }
             } else {
                 System.out.println("Invalid Input");
@@ -169,7 +171,7 @@ class Program {
                     creditHours = sc.nextFloat();
 
                     if(creditHours <= 0) {
-                        System.out.println("You Can't Enter Hours below 1");
+                        System.out.println("Credit hours must be greater than 0");
                         continue;
                     }
                     break;
@@ -182,7 +184,7 @@ class Program {
 
             while (true) {
                 System.out.print("Enter Grade: ");
-                grade = sc.nextLine();
+                grade = sc.nextLine().trim().toUpperCase();
 
                 if (!gradeTables.isValidGrade(
                         grade,
@@ -221,7 +223,7 @@ class Program {
         );
 
         float totalCreditHours = 0;
-        for(Course course: semester.course) {
+        for (Course course : semester.courses) {
             totalCreditHours += course.creditHours;
         }
 
