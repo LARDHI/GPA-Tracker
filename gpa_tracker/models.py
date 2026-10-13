@@ -33,7 +33,7 @@ class Course:
     Rules (spec section 3):
     - code: non-empty after trimming
     - name: non-empty after trimming, at most 100 characters
-    - credits: whole number from 1 to 9 (a bool or a decimal is not valid)
+    - credits: a real int from 1 to 9 (bool, 3.0 and 3.5 are all invalid)
     - status: must be a CourseStatus
     - COMPLETED needs a grade; IN_PROGRESS must have grade None
     Whether the grade is a letter in the ACTIVE table needs the student's
@@ -99,7 +99,9 @@ class Student:
         raise NotImplementedError
 
     def add_semester(self, name: str) -> Semester:
-        """Unique within the profile, ignoring case and extra spaces."""
+        """Unique within the profile. Compare after trimming, collapsing runs
+        of internal whitespace to one space, and ignoring case (spec section 3):
+        " Fall 2026 " == "fall 2026", but "Fall 2026" != "Fall2026"."""
         # TODO (you)
         raise NotImplementedError
 

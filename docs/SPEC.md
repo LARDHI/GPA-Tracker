@@ -67,7 +67,8 @@ Student -> Semesters (ordered) -> Courses
 - Scale and system are chosen at creation. They are **locked only while at least one course exists**. If all courses are deleted, they can be changed again.
 
 **Semester:** name only.
-- Non-empty, at most 50 characters, unique within the profile (ignoring case and extra spaces). Free text, never parsed.
+- Non-empty, at most 50 characters, unique within the profile. Free text, never parsed.
+- **Uniqueness (clarified, T2):** names are compared after trimming leading and trailing whitespace, collapsing each run of internal whitespace to a single space, and ignoring case. So `" Fall 2026 "` and `"fall 2026"` are the same name, while `"Fall 2026"` and `"Fall2026"` are different.
 - Rename and delete are allowed. Deleting removes its courses, after explicit confirmation.
 - Order is the order of addition.
 
