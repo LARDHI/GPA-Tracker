@@ -76,11 +76,13 @@ Student -> Semesters (ordered) -> Courses
 **Course:** code, name, credit hours, status, grade.
 - Code: non-empty, unique within its semester (ignoring case). The same code may appear in different semesters.
 - Name: non-empty, at most 100 characters.
-- Credit hours: whole number from 1 to 9. No per-semester limit.
+- **Trimming (clarified, T2):** code and name are stored with leading and trailing whitespace removed: `" CS102 "` is stored as `"CS102"`, `" A B "` as `"A B"`. The 100-character limit applies to the trimmed name. Code uniqueness compares trimmed codes, ignoring case.
+- Credit hours: whole number from 1 to 9. No per-semester limit. Only a real integer is accepted: `True`, `3.0`, `3.5` and text such as `"3"` are rejected.
 - **Status: `COMPLETED` or `IN_PROGRESS`**, an explicit field.
   - `COMPLETED` requires a valid grade letter from the active table.
   - `IN_PROGRESS` has no grade. It is a registered course whose actual grade is not yet available, **not** a completed course with a missing grade.
   - A status with a mismatched grade (completed with no grade, in progress with a grade) is invalid everywhere: in the model, on load, and in the CLI.
+- **Grade normalization (clarified, T2):** a course's grade is normalized with the section 2 rules and stored in that form: `" b+ "` is stored as `"B+"`. A `Course` itself checks only that the grade is text and agrees with the status. Whether the letter exists in the active table is checked by `Student` when a course is added or replaced, so `Course(grade="Z")` can be constructed but `Student.add_course` rejects it.
 - All course fields are editable. A course may be deleted after confirmation.
 - When the real grade arrives, the user edits the course, changes the status to Completed, and enters the grade. Nothing converts automatically.
 

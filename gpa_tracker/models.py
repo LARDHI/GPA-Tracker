@@ -31,11 +31,16 @@ class Course:
     """One course. Checks here need nothing but the course's own fields.
 
     Rules (spec section 3):
-    - code: non-empty after trimming
-    - name: non-empty after trimming, at most 100 characters
-    - credits: a real int from 1 to 9 (bool, 3.0 and 3.5 are all invalid)
+    - code: text, non-empty after trimming; stored trimmed
+    - name: text, non-empty after trimming, at most 100 characters
+      (measured after trimming); stored trimmed
+    - credits: a real int from 1 to 9 (bool, 3.0, 3.5 and "3" are invalid)
     - status: must be a CourseStatus
     - COMPLETED needs a grade; IN_PROGRESS must have grade None
+      (so "" is not a valid grade for either status)
+    - grade, when present: must be text; stored normalized with
+      grading.normalize_grade (" b+ " -> "B+"). Turn its ValueError into a
+      ValidationError so every failure from Course has one type.
     Whether the grade is a letter in the ACTIVE table needs the student's
     scale and system, so Student checks that, not Course.
     """
