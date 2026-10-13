@@ -83,7 +83,14 @@ class Student:
 
     def __post_init__(self) -> None:
         """TODO (you): name non-empty after trimming, at most 100 characters;
-        (scale, system) must be one of the four configurations."""
+        (scale, system) must be one of the four configurations.
+
+        Any semesters passed in are validated with the SAME rules as
+        add_semester and add_course (cleaned unique names, unique course
+        codes per semester, grades valid in the active table). Invalid
+        initial data raises ValidationError; nothing is accepted silently.
+        Share the checking code with the add_* methods so the two paths
+        cannot drift apart."""
         raise NotImplementedError
 
     @property

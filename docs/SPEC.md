@@ -65,6 +65,7 @@ Student -> Semesters (ordered) -> Courses
 **Student:** full name, GPA scale (4.0 or 5.0), grading system (Plus Only or Plus/Minus).
 - Name: non-empty after trimming, at most 100 characters. Editable at any time.
 - Scale and system are chosen at creation. They are **locked only while at least one course exists**. If all courses are deleted, they can be changed again.
+- **Construction with existing data (clarified, T2):** creating a `Student` with semesters already filled in applies exactly the same rules as `add_semester` and `add_course`: semester names are cleaned and unique, course codes are unique within each semester, and every completed course's grade is valid in the student's active grading table. Invalid initial data is rejected with a `ValidationError`; it is never accepted silently or repaired. This is also the path used to load a saved file (section 6).
 
 **Semester:** name only.
 - Non-empty, at most 50 characters, unique within the profile. Free text, never parsed.
