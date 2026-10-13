@@ -56,6 +56,7 @@ pytest
 | T2 | Course code and name are stored trimmed. The 100-character name limit applies to the trimmed name. Code uniqueness compares trimmed codes, ignoring case. | Spec section 3 |
 | T2 | A course's grade is normalized and stored (`" b+ "` becomes `"B+"`). `Course` checks only type and status consistency. `Student` checks the letter exists in the active table, so `Course(grade="Z")` can exist but `add_course` rejects it. | Spec section 3 |
 | T2 | Credits must be a real `int` from 1 to 9. `True`, `3.0`, `3.5` and `"3"` are rejected. | Spec section 3 |
+| T2 | `Student(...)` created with existing semesters validates them with the same rules as `add_semester` and `add_course` (cleaned unique names, unique course codes per semester, grades valid in the active table) and raises `ValidationError` on bad data. Storage later loads files through this same path. | Spec section 3 |
 | T2 | `ValidationError` subclasses `ValueError`. | `models.py` docstring |
 | T2 | Editing a course means building a new, already-valid `Course` and calling `replace_course`. If validation fails, the original course stays unchanged and in the same position. | `models.py` docstring |
 | T2 | Validation is split: `Course` and `Semester` check their own fields; `Student` checks anything needing several objects or the scale/system (uniqueness, grade in table, lock rule). | `models.py` docstring |
@@ -76,9 +77,10 @@ Nothing to add except two lessons. A test that compares a value to itself proves
 **Test order:**
 1. `Course`: credits 1, 7, 9 accepted; 0, 10, -1, 3.0, 3.5, `True`, `"3"`, `None` rejected. Blank or non-text code and name rejected. Trimmed storage. Name length 100 accepted, 101 rejected, measured after trimming. Status/grade pairs. A string status rejected. Grade stored normalized. `""`, `"  "` and non-text grades rejected.
 2. `Semester`: blank name and a 51-character cleaned name rejected.
-3. `Student`, semesters: duplicates rejected whatever the case or spacing; stored name is the cleaned one; renaming to its own name is allowed.
-4. `Student`, courses: same code twice in a semester rejected (any case, trimmed); same code in two semesters allowed; grade letter checked against the active table; `A-` rejected in Plus Only; editing is not a duplicate of itself; a failed `replace_course` leaves the original in place at the same index.
-5. Lock rule: scale/system change fails while any course exists, works again after the last course is deleted, and also after deleting a semester that held the only courses.
+3. `Student`, construction: invalid `semesters=[...]` is rejected (duplicate semester names, duplicate course codes in one semester, a grade not in the active table) with the same error type as `add_semester` and `add_course`; valid initial data is accepted.
+4. `Student`, semesters: duplicates rejected whatever the case or spacing; stored name is the cleaned one; renaming to its own name is allowed.
+5. `Student`, courses: same code twice in a semester rejected (any case, trimmed); same code in two semesters allowed; grade letter checked against the active table; `A-` rejected in Plus Only; editing is not a duplicate of itself; a failed `replace_course` leaves the original in place at the same index.
+6. Lock rule: scale/system change fails while any course exists, works again after the last course is deleted, and also after deleting a semester that held the only courses.
 
 Use `pytest.raises(ValidationError, match="credits")` so every test checks that the message names the field.
 
@@ -88,6 +90,7 @@ Use `pytest.raises(ValidationError, match="credits")` so every test checks that 
 - Order inside a name check: clean first, then length, then uniqueness.
 - Derive `has_courses` from the semesters' course lists. A separate flag drifts out of sync after deletes.
 - `normalize_grade` raises `ValueError`; `Course` turns it into `ValidationError`.
+- Put the semester and course checks in shared helpers that both `Student.__post_init__` and the `add_*` methods call, so the constructor path and the method path cannot drift apart.
 
 ### T3: `calculator.py` (Proposed shape)
 
