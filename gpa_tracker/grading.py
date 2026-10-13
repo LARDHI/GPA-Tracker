@@ -1,4 +1,3 @@
-"""Fixed grading tables and grade-related helpers for GPA Tracker."""
 
 from decimal import Decimal
 
@@ -14,6 +13,7 @@ FOUR_POINT_PLUS_ONLY = {
     "D": Decimal("1.00"),
     "F": Decimal("0.00"),
 }
+
 
 FOUR_POINT_PLUS_MINUS = {
     "A+": Decimal("4.00"),
@@ -31,6 +31,7 @@ FOUR_POINT_PLUS_MINUS = {
     "F": Decimal("0.00"),
 }
 
+
 FIVE_POINT_PLUS_ONLY = {
     "A+": Decimal("5.00"),
     "A": Decimal("4.75"),
@@ -42,6 +43,7 @@ FIVE_POINT_PLUS_ONLY = {
     "D": Decimal("2.00"),
     "F": Decimal("1.00"),
 }
+
 
 FIVE_POINT_PLUS_MINUS = {
     "A+": Decimal("5.00"),
@@ -59,6 +61,7 @@ FIVE_POINT_PLUS_MINUS = {
     "F": Decimal("1.00"),
 }
 
+
 GRADING_TABLES = {
     ("4.0", "plus_only"): FOUR_POINT_PLUS_ONLY,
     ("4.0", "plus_minus"): FOUR_POINT_PLUS_MINUS,
@@ -67,42 +70,45 @@ GRADING_TABLES = {
 }
 
 
-def normalize_grade(grade: str) -> str:
-    """Normalize a grade by removing whitespace and uppercasing it.
+def normalize_grade(grade):
+    """Normalize a grade by removing whitespace and uppercasing."""
+    if not isinstance(grade, str):
+        raise ValueError("Grade must be a string.")
 
-    For example, " b + " becomes "B+". Empty or whitespace-only input
-    raises ValueError.
-    """
-    normalized = "".join(grade.split()).upper()
-    if not normalized:
+    grade = "".join(grade.split()).upper()
+
+    if not grade:
         raise ValueError("Grade cannot be empty.")
-    return normalized
+
+    return grade
 
 
-def _get_table_and_grade(grade: str, scale: str, grading_system: str):
-    """Validate the grading configuration and grade, then return both."""
-    normalized_grade = normalize_grade(grade)
+def _get_table_and_grade(grade, scale, grading_system):
+    """Validate the configuration and grade, then return both."""
+    grade = normalize_grade(grade)
+
     try:
         table = GRADING_TABLES[(scale, grading_system)]
-    except KeyError as exc:
-        raise ValueError(
-            f"Unsupported grading configuration: {scale!r}, {grading_system!r}."
-        ) from exc
+    except (KeyError, TypeError):
+        raise ValueError("Invalid grading configuration.") from None
 
-    if normalized_grade not in table:
-        raise ValueError(
-            f"Grade {normalized_grade!r} is not valid for {scale} {grading_system}."
-        )
-    return table, normalized_grade
+    if grade not in table:
+        raise ValueError(f"Invalid grade: {grade}")
+
+    return table, grade
 
 
-def grade_points(grade: str, scale: str, grading_system: str) -> Decimal:
-    """Return the Decimal grade points for a valid grade and configuration."""
-    table, normalized_grade = _get_table_and_grade(grade, scale, grading_system)
-    return table[normalized_grade]
+def grade_points(grade, scale, grading_system):
+    """Return the grade points for the selected grading configuration."""
+    table, grade = _get_table_and_grade(
+        grade, scale, grading_system
+    )
+    return table[grade]
 
 
-def is_passing(grade: str, scale: str, grading_system: str) -> bool:
-    """Determine whether a valid grade passes; only F is failing."""
-    _, normalized_grade = _get_table_and_grade(grade, scale, grading_system)
-    return normalized_grade != "F"
+def is_passing(grade, scale, grading_system):
+    """Return whether the grade represents a passing result."""
+    _, grade = _get_table_and_grade(
+        grade, scale, grading_system
+    )
+    return grade != "F"
