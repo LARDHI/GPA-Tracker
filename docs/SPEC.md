@@ -69,6 +69,7 @@ Student -> Semesters (ordered) -> Courses
 **Semester:** name only.
 - Non-empty, at most 50 characters, unique within the profile. Free text, never parsed.
 - **Uniqueness (clarified, T2):** names are compared after trimming leading and trailing whitespace, collapsing each run of internal whitespace to a single space, and ignoring case. So `" Fall 2026 "` and `"fall 2026"` are the same name, while `"Fall 2026"` and `"Fall2026"` are different.
+- **Storage (clarified, T2):** the name is stored in its cleaned form (trimmed, internal whitespace collapsed) with its original capitalization kept. Entering `" Fall 2026 "` stores `"Fall 2026"`. Case is ignored only when checking uniqueness, never when storing. The 50-character limit applies to the cleaned name.
 - Rename and delete are allowed. Deleting removes its courses, after explicit confirmation.
 - Order is the order of addition.
 

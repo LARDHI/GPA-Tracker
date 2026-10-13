@@ -101,7 +101,9 @@ class Student:
     def add_semester(self, name: str) -> Semester:
         """Unique within the profile. Compare after trimming, collapsing runs
         of internal whitespace to one space, and ignoring case (spec section 3):
-        " Fall 2026 " == "fall 2026", but "Fall 2026" != "Fall2026"."""
+        " Fall 2026 " == "fall 2026", but "Fall 2026" != "Fall2026".
+        Store the cleaned name (trimmed, collapsed) with its capitalization
+        kept: " Fall 2026 " is stored as "Fall 2026"."""
         # TODO (you)
         raise NotImplementedError
 
