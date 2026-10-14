@@ -9,6 +9,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import Enum
+from gpa_tracker.grading import normalize_grade
 
 
 class ValidationError(ValueError):
@@ -51,9 +52,55 @@ class Course:
     status: CourseStatus
     grade: str | None = None
 
+
+
+        
     def __post_init__(self) -> None:
-        # TODO (you): validate every rule above; raise ValidationError.
-        raise NotImplementedError
+        if not isinstance(self.code, str):
+            raise ValidationError("Course code must be a string.")
+
+        if not isinstance(self.name, str):
+            raise ValidationError("Course name must be a string.")
+
+        code = self.code.split()
+        name = self.name.split()
+
+        if not code:
+            raise ValidationError("Course code cannot be empty.")
+
+        if not name:
+            raise ValidationError("Course name cannot be empty.")
+
+        if len(name) > 100:
+            raise ValidationError("Course name cannot exceed 100 characters.")
+
+        if isinstance(self.credits, bool) or not isinstance(self.credits, int):
+            raise ValidationError("Course credits must be an integer.")
+
+        if not 1 <= self.credits <= 9:
+            raise ValidationError("Course credits must be between 1 and 9.")
+
+        if not isinstance(self.status, CourseStatus):
+            raise ValidationError("Course status must be COMPLETED or IN_PROGRESS.")
+
+        if self.grade is not None:
+            try:
+                grade = normalize_grade(self.grade)
+            except ValueError as exc:
+                raise ValidationError(f"Invalid course grade: {exc}") from exc
+        else:
+            grade = None
+
+        if self.status == CourseStatus.COMPLETED and grade is None:
+            raise ValidationError("A completed course must have a grade.")
+
+        if self.status == CourseStatus.IN_PROGRESS and grade is not None:
+            raise ValidationError("An in-progress course cannot have a grade.")
+
+        self.code = code
+        self.name = name
+        self.grade = grade
+    
 
 
 @dataclass
