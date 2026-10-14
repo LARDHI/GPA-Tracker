@@ -52,8 +52,6 @@ class Course:
     status: CourseStatus
     grade: str | None = None
 
-
-
         
     def __post_init__(self) -> None:
         if not isinstance(self.code, str):
@@ -99,8 +97,7 @@ class Course:
 
         self.code = code
         self.name = name
-        self.grade = grade
-    
+        self.grade = grade  
 
 
 @dataclass
@@ -115,8 +112,21 @@ class Semester:
     courses: list[Course] = field(default_factory=list)
 
     def __post_init__(self) -> None:
-        # TODO (you): validate the name rule above.
-        raise NotImplementedError
+        if not isinstance(self.name, str):
+            raise ValidationError("Semester name must be a string.")
+
+        if not isinstance(self.courses, list):
+            raise ValidationError("Semester courses must be a list.")
+
+        name = " ".join(self.name.split())
+
+        if not name:
+            raise ValidationError("Semester name cannot be empty.")
+
+        if len(name) > 50:
+            raise ValidationError("Semester name cannot exceed 50 characters.")
+
+        self.name = name
 
 
 @dataclass
