@@ -62,8 +62,8 @@ class Course:
         if not isinstance(self.name, str):
             raise ValidationError("Course name must be a string.")
 
-        code = self.code.split()
-        name = self.name.split()
+        code = self.code.strip()
+        name = self.name.strip()
 
         if not code:
             raise ValidationError("Course code cannot be empty.")
