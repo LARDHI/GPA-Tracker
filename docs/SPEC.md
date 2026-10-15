@@ -65,20 +65,25 @@ Student -> Semesters (ordered) -> Courses
 **Student:** full name, GPA scale (4.0 or 5.0), grading system (Plus Only or Plus/Minus).
 - Name: non-empty after trimming, at most 100 characters. Editable at any time.
 - Scale and system are chosen at creation. They are **locked only while at least one course exists**. If all courses are deleted, they can be changed again.
+- **Construction with existing data (clarified, T2):** creating a `Student` with semesters already filled in applies exactly the same rules as `add_semester` and `add_course`: semester names are cleaned and unique, course codes are unique within each semester, and every completed course's grade is valid in the student's active grading table. Invalid initial data is rejected with a `ValidationError`; it is never accepted silently or repaired. This is also the path used to load a saved file (section 6).
 
 **Semester:** name only.
-- Non-empty, at most 50 characters, unique within the profile (ignoring case and extra spaces). Free text, never parsed.
+- Non-empty, at most 50 characters, unique within the profile. Free text, never parsed.
+- **Uniqueness (clarified, T2):** names are compared after trimming leading and trailing whitespace, collapsing each run of internal whitespace to a single space, and ignoring case. So `" Fall 2026 "` and `"fall 2026"` are the same name, while `"Fall 2026"` and `"Fall2026"` are different.
+- **Storage (clarified, T2):** the name is stored in its cleaned form (trimmed, internal whitespace collapsed) with its original capitalization kept. Entering `" Fall 2026 "` stores `"Fall 2026"`. Case is ignored only when checking uniqueness, never when storing. The 50-character limit applies to the cleaned name.
 - Rename and delete are allowed. Deleting removes its courses, after explicit confirmation.
 - Order is the order of addition.
 
 **Course:** code, name, credit hours, status, grade.
 - Code: non-empty, unique within its semester (ignoring case). The same code may appear in different semesters.
 - Name: non-empty, at most 100 characters.
-- Credit hours: whole number from 1 to 9. No per-semester limit.
+- **Trimming (clarified, T2):** code and name are stored with leading and trailing whitespace removed: `" CS102 "` is stored as `"CS102"`, `" A B "` as `"A B"`. The 100-character limit applies to the trimmed name. Code uniqueness compares trimmed codes, ignoring case.
+- Credit hours: whole number from 1 to 9. No per-semester limit. Only a real integer is accepted: `True`, `3.0`, `3.5` and text such as `"3"` are rejected.
 - **Status: `COMPLETED` or `IN_PROGRESS`**, an explicit field.
   - `COMPLETED` requires a valid grade letter from the active table.
   - `IN_PROGRESS` has no grade. It is a registered course whose actual grade is not yet available, **not** a completed course with a missing grade.
   - A status with a mismatched grade (completed with no grade, in progress with a grade) is invalid everywhere: in the model, on load, and in the CLI.
+- **Grade normalization (clarified, T2):** a course's grade is normalized with the section 2 rules and stored in that form: `" b+ "` is stored as `"B+"`. A `Course` itself checks only that the grade is text and agrees with the status. Whether the letter exists in the active table is checked by `Student` when a course is added or replaced, so `Course(grade="Z")` can be constructed but `Student.add_course` rejects it.
 - All course fields are editable. A course may be deleted after confirmation.
 - When the real grade arrives, the user edits the course, changes the status to Completed, and enters the grade. Nothing converts automatically.
 
